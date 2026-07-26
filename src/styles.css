@@ -1,0 +1,326 @@
+/* =========================================================
+   mechproz98
+   gray beveled window chrome sitting on a dark old-web desktop.
+   the bevels are all four-tone inset box-shadows, no images.
+   ========================================================= */
+
+:root {
+  --fs: 1;                 /* UI text scale, stepped by the A− / A+ buttons */
+  --silver:   #c0c0c0;
+  --silver-d: #b0b0b0;
+  --white:    #ffffff;
+  --light:    #dfdfdf;
+  --gray:     #808080;
+  --black:    #0a0a0a;
+  --navy:     #000080;
+  --title:    linear-gradient(90deg, #000080 0%, #1084d0 100%);
+  --title-inactive: linear-gradient(90deg, #808080 0%, #b5b5b5 100%);
+  --text:     #000000;
+  --link:     #0000cc;
+
+  /* bevels (98.css-style four-tone) */
+  --raise:  inset -1px -1px var(--black), inset 1px 1px var(--white), inset -2px -2px var(--gray), inset 2px 2px var(--light);
+  --sink:   inset -1px -1px var(--white), inset 1px 1px var(--black), inset -2px -2px var(--light), inset 2px 2px var(--gray);
+  --sink-1: inset -1px -1px var(--white), inset 1px 1px var(--gray);
+
+  /* desktop */
+  --desk: #101028;
+}
+
+body.theme-teal { --desk: #008080; }
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+/* root font-size drives every rem below; the A−/A+ buttons change --fs */
+html { font-size: calc(16px * var(--fs, 1)); }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Tahoma, "MS Sans Serif", Geneva, Verdana, sans-serif;
+  font-size: 1rem;
+  color: var(--text);
+  cursor: url("data:image/png;base64,"), auto;
+  padding-bottom: 34px; /* taskbar */
+  overflow: hidden;
+  background-color: var(--desk);
+  background-image:
+    radial-gradient(rgba(255,255,255,.20) 1px, transparent 1px),
+    radial-gradient(rgba(255,255,255,.10) 1px, transparent 1px);
+  background-size: 46px 46px, 29px 29px;
+  background-position: 0 0, 13px 19px;
+  transition: background-color .2s;
+}
+body.theme-teal { background-image: none; }
+
+/* ------------------- desktop icons ------------------- */
+.desktop { position: relative; z-index: 1; height: 100%; }
+.desk-icons {
+  position: absolute; top: 14px; left: 12px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.desk-icon {
+  width: 102px; background: transparent; border: 1px dotted transparent;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  cursor: pointer; padding: 3px; color: #fff;
+  font-family: Tahoma, sans-serif; font-size: 0.8rem; text-align: center;
+}
+.desk-icon .di-img { font-size: 30px; filter: drop-shadow(1px 1px 0 rgba(0,0,0,.6)); }
+.desk-icon .di-label {
+  padding: 1px 3px; line-height: 1.2;
+  max-width: 100%; overflow-wrap: break-word; word-break: break-word;
+  text-shadow: 1px 1px 0 rgba(0,0,0,.8);
+}
+.desk-icon:focus { outline: none; }
+.desk-icon.selected { border: 1px dotted #fff; }
+.desk-icon.selected .di-label { background: var(--navy); }
+body.theme-teal .desk-icon .di-label { text-shadow: 1px 1px 0 rgba(0,0,0,.6); }
+
+/* ------------------- windows ------------------- */
+.window {
+  position: absolute; z-index: 10;
+  width: 370px; max-width: calc(100vw - 16px);
+  background: var(--silver);
+  box-shadow: var(--raise);
+  padding: 3px;
+  font-size: 0.8rem;
+}
+.window.maximized {
+  top: 0 !important; left: 0 !important;
+  width: 100vw !important; height: calc(100vh - 34px) !important;
+}
+
+/* title bar */
+.title-bar {
+  display: flex; align-items: center; gap: 4px;
+  background: var(--title); color: #fff;
+  padding: 2px 2px 2px 4px; height: 20px;
+  cursor: grab; user-select: none;
+}
+.title-bar:active { cursor: grabbing; }
+.window.inactive .title-bar { background: var(--title-inactive); }
+.title-bar-text {
+  flex: 1; font-weight: 700; font-size: 0.85rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  letter-spacing: .2px;
+}
+.title-bar-controls { display: flex; gap: 2px; }
+.tb-btn {
+  width: 17px; height: 15px; padding: 0;
+  background: var(--silver); box-shadow: var(--raise);
+  font-family: "Silkscreen", monospace; font-size: 8px; line-height: 13px;
+  color: #000; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.tb-btn:active { box-shadow: var(--sink); }
+.tb-close { font-weight: 700; }
+
+/* window body */
+.window-body {
+  background: var(--silver); padding: 12px 12px 14px;
+  max-height: 60vh; overflow-y: auto; margin-top: 2px;
+}
+.window.maximized .window-body { max-height: calc(100vh - 60px); }
+.window-body::-webkit-scrollbar { width: 16px; }
+.window-body::-webkit-scrollbar-track { background: #dfdfdf; box-shadow: var(--sink-1); }
+.window-body::-webkit-scrollbar-thumb { background: var(--silver); box-shadow: var(--raise); }
+
+/* ------------------- content ------------------- */
+p { line-height: 1.5; margin: 0 0 10px; }
+.lead {
+  font-family: "Silkscreen", monospace; font-size: 1.05rem; font-weight: 700;
+  color: var(--navy); margin: 0 0 12px; line-height: 1.4;
+}
+.muted { color: #555; }
+.small { font-size: 0.8rem; }
+a { color: var(--link); }
+a:hover { color: #cc0000; }
+
+.kv { border-collapse: collapse; width: 100%; margin: 0 0 12px; }
+.kv td { padding: 3px 6px; vertical-align: top; border-bottom: 1px solid #b0b0b0; }
+.kv td:first-child { color: var(--navy); font-weight: 700; white-space: nowrap; width: 1%; }
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 5px; margin: 4px 0; }
+.chip {
+  font-size: 0.8rem; padding: 4px 9px; background: var(--silver);
+  box-shadow: var(--raise); white-space: nowrap;
+}
+
+/* fieldset group boxes */
+.fs { border: none; box-shadow: var(--sink-1); margin: 0 0 12px; padding: 8px 10px 10px; }
+.fs legend {
+  font-family: "Silkscreen", monospace; font-size: 0.72rem; color: var(--navy);
+  padding: 0 4px; text-transform: lowercase;
+}
+
+/* projects — sunken white "file" panels */
+.proj {
+  background: #fff; box-shadow: var(--sink); padding: 9px 11px; margin: 0 0 10px;
+}
+.proj-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 5px; }
+.proj-head b { font-size: 0.9rem; }
+.proj-year { color: #666; font-family: "VT323", monospace; font-size: 0.95rem; margin-left: auto; }
+/* the little WIP tag i put next to projects that aren't done */
+.badge-wip {
+  font-family: "Silkscreen", monospace; font-size: 0.6rem; letter-spacing: 0.5px;
+  padding: 2px 5px; background: #ffe9a8; color: #6b4c00;
+  border: 1px solid #6b4c00; white-space: nowrap;
+}
+.proj-links { margin: 4px 0 0; }
+.proj-links a { font-weight: 700; text-decoration: none; }
+.proj-links a:hover { text-decoration: underline; }
+
+.list { margin: 0; padding-left: 18px; }
+.list li { padding: 3px 0; }
+
+.log { list-style: none; margin: 0; padding: 0; }
+.log li { padding: 4px 0; border-bottom: 1px dotted #999; font-family: "VT323", monospace; font-size: 15px; }
+.log .date { color: var(--navy); font-weight: 700; margin-right: 8px; }
+
+/* art — Bluesky embeds */
+.bsky-wrap { margin: 4px 0 10px; }
+.bsky-wrap iframe { width: 100% !important; border: none; }
+.bluesky-embed { margin: 8px 0; }               /* fallback before the script swaps it */
+.art-links { text-align: center; margin: 6px 0 0; }
+.art-links a { font-weight: 700; text-decoration: none; }
+.art-links a:hover { text-decoration: underline; }
+
+/* 88x31 buttons */
+.btn88-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.btn88 {
+  width: 88px; height: 31px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-family: "Silkscreen", monospace; font-size: 7px; line-height: 1.3;
+  color: #fff; background: linear-gradient(135deg, #000080, #1084d0);
+  border: 1px solid #000; box-shadow: 1px 1px 0 #fff inset;
+}
+
+/* ------------------- taskbar ------------------- */
+.taskbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 500; height: 34px;
+  display: flex; align-items: center; gap: 4px; padding: 3px 4px;
+  background: var(--silver); box-shadow: inset 0 1px 0 var(--white), inset 0 2px 0 var(--light);
+  border-top: 1px solid var(--white);
+}
+.start-btn {
+  display: flex; align-items: center; gap: 5px; height: 24px; padding: 0 8px 0 5px;
+  background: var(--silver); box-shadow: var(--raise); cursor: pointer;
+  font-family: Tahoma, sans-serif; font-size: 0.85rem; color: #000;
+}
+.start-btn.active { box-shadow: var(--sink); }
+.start-btn b { font-weight: 700; }
+.start-logo { font-size: 15px; }
+.task-sep { width: 2px; height: 22px; box-shadow: var(--sink-1); margin: 0 2px; }
+
+.task-windows { display: flex; gap: 3px; flex: 1; overflow-x: auto; scrollbar-width: none; }
+.task-windows::-webkit-scrollbar { display: none; }
+.task-win {
+  display: flex; align-items: center; gap: 5px; min-width: 120px; max-width: 160px; height: 24px;
+  padding: 0 8px; background: var(--silver); box-shadow: var(--raise); cursor: pointer;
+  font-size: 0.8rem; color: #000; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.task-win.active { box-shadow: var(--sink); font-weight: 700; }
+.task-win .tw-ico { flex: none; }
+.task-win .tw-label { overflow: hidden; text-overflow: ellipsis; }
+
+.tray {
+  display: flex; align-items: center; gap: 6px; height: 24px; padding: 0 6px;
+  box-shadow: var(--sink-1);
+}
+.tray-btn { background: none; border: none; cursor: pointer; font-size: 14px; padding: 0 1px; }
+/* text-size stepper (A− / A+) */
+.tray-size { display: flex; gap: 2px; }
+.size-btn {
+  width: 22px; height: 20px; background: var(--silver); box-shadow: var(--raise);
+  cursor: pointer; color: #000; font-family: Tahoma, sans-serif; font-weight: 700;
+  line-height: 1; padding: 0; display: flex; align-items: center; justify-content: center;
+}
+.size-btn:active,
+.size-btn:disabled { box-shadow: var(--sink); }
+.size-btn:disabled { color: var(--gray); cursor: default; }
+.size-btn .a-sm { font-size: 10px; }
+.size-btn .a-lg { font-size: 14px; }
+.tray-clock { font-size: 0.85rem; min-width: 44px; text-align: center; }
+
+/* ------------------- start menu ------------------- */
+.start-menu {
+  position: fixed; bottom: 34px; left: 4px; z-index: 600;
+  width: 220px; display: flex; background: var(--silver);
+  box-shadow: var(--raise); padding: 3px;
+}
+.start-menu[hidden] { display: none; }
+.start-side {
+  width: 30px; background: linear-gradient(#000080, #1084d0); margin-right: 3px;
+  display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px;
+}
+.start-side span {
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  font-family: "Silkscreen", monospace; font-size: 15px; color: #fff; letter-spacing: 1px;
+}
+.start-side b { color: #c0c0c0; }
+.start-list { list-style: none; margin: 0; padding: 2px 0; flex: 1; }
+.start-list li {
+  display: flex; align-items: center; gap: 9px; padding: 6px 10px; cursor: pointer; font-size: 0.92rem;
+}
+.start-list li[data-window]:hover, .start-list li[data-action]:hover { background: var(--navy); color: #fff; }
+.start-list .si-img { font-size: 16px; width: 18px; text-align: center; }
+.start-list .sep { height: 0; padding: 0; margin: 4px 2px; box-shadow: inset 0 1px 0 var(--gray), inset 0 2px 0 var(--white); cursor: default; }
+.start-list .sep:hover { background: none; }
+
+/* ------------------- achievement message box ------------------- */
+.msgbox {
+  position: fixed; right: 14px; bottom: 46px; z-index: 700; width: 260px;
+  background: var(--silver); box-shadow: var(--raise); padding: 3px;
+  transform: translateY(160%); opacity: 0; transition: transform .28s ease, opacity .28s;
+}
+.msgbox.show { transform: translateY(0); opacity: 1; }
+.msgbox .title-bar { cursor: default; }
+.msgbox-body { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--silver); margin-top: 2px; }
+.msgbox-body p { margin: 0; line-height: 1.4; }
+.msg-icon { font-size: 32px; }
+
+/* ------------------- shutdown ------------------- */
+.shutdown {
+  position: fixed; inset: 0; z-index: 9999; background: #000;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;
+}
+.shutdown[hidden] { display: none; }
+.shutdown-text {
+  color: #ffb000; font-family: "VT323", monospace; font-size: clamp(24px, 6vw, 46px);
+  text-align: center; line-height: 1.4; text-shadow: 0 0 8px rgba(255,176,0,.5);
+}
+.shutdown-hint { color: #665500; font-family: "VT323", monospace; font-size: 20px; margin-top: 20px; }
+
+/* ------------------- responsive ------------------- */
+@media (max-width: 620px) {
+  html { font-size: calc(17px * var(--fs, 1)); }  /* a touch larger on small screens */
+
+  /* windows fill the width and stay in view */
+  .window { width: calc(100vw - 12px); max-width: calc(100vw - 12px); }
+  .window-body { max-height: 66vh; }
+
+  /* bigger touch targets on the title bar */
+  .tb-btn { width: 22px; height: 19px; font-size: 10px; line-height: 17px; }
+
+  /* taskbar: Start + scrollable window buttons, hide labels/clock to save room */
+  .task-win { min-width: 40px; max-width: 46px; padding: 0 6px; }
+  .task-win .tw-label { display: none; }
+  .tray-clock { display: none; }
+  .tray-btn { font-size: 18px; padding: 0 3px; }
+
+  /* desktop icons: smaller grid, easier to tap */
+  .desk-icons { top: 8px; left: 8px; gap: 14px; }
+  .desk-icon { width: 68px; }
+  .desk-icon .di-img { font-size: 27px; }
+
+  /* start menu spans most of the screen */
+  .start-menu { width: calc(100vw - 8px); }
+  .start-list li { padding: 9px 10px; }   /* taller rows for touch */
+
+  /* achievement box a bit wider */
+  .msgbox { width: calc(100vw - 24px); max-width: 300px; }
+}
+
+/* fine-tune very small phones */
+@media (max-width: 380px) {
+  .desk-icon { width: 60px; font-size: 0.7rem; }
+  .desk-icon .di-img { font-size: 24px; }
+}
